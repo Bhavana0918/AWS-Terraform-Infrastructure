@@ -99,10 +99,10 @@ target_group_name     = "app-target-group"
 target_group_port     = 22
 target_group_protocol = "SSH"
 
-health_check_healthy_threshold   = 5
+health_check_healthy_threshold   = 3
 health_check_unhealthy_threshold = 5
-health_check_timeout             = 30
-health_check_interval            = 40
+health_check_timeout             = 50
+health_check_interval            = 60
 health_check_path                = "/"
 health_check_matcher             = "200"
 
