@@ -110,7 +110,5 @@ listener_port     = 80
 listener_protocol = "HTTP"
 
 ec2_instance_ids = {
-  "WebServer1" = "i-06ae52648d311d895"
-  "WebServer2" = "i-06a986bb73fe7567a"
-  "DBServer"   = "i-05280018c28200eb3"
+  null
 }
