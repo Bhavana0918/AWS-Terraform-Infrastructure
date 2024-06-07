@@ -109,6 +109,4 @@ health_check_matcher             = "200"
 listener_port     = 80
 listener_protocol = "HTTP"
 
-ec2_instance_ids = {
-  null
-}
+ec2_instance_ids = {}
