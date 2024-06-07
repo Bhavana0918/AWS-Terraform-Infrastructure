@@ -1,0 +1,48 @@
+name: Terraform
+
+on:
+  workflow_dispatch:
+    inputs:
+      APPLY_PLAN:
+        description: 'Should I apply the plan [yes|no]?'
+        required: true
+        default: 'no'
+
+jobs:
+  terraform:
+    name: 'Terraform Apply'
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2
+      with:
+        token: ${{ secrets.MY_GITHUB_TOKEN }}
+
+    - name: Setup Terraform
+      uses: hashicorp/setup-terraform@v2
+      with:
+        terraform_version: 1.0.11
+
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
+
+    - name: Terraform Init
+      run: terraform init -backend-config="infrastructure-backend.config"
+
+    - name: Terraform Plan
+      run: terraform plan -var-file="terraform.tfvars"
+
+    - name: Terraform Apply
+      if: ${{ github.event.inputs.APPLY_PLAN == 'yes' }}
+      run: terraform apply -var-file="terraform.tfvars" -auto-approve
+      env:
+        TF_INPUT: false
+        TF_IN_AUTOMATION: true
+
+    # - name: Terraform destroy
+    #   run: terraform destroy -var-file="terraform.tfvars" -auto-approve
