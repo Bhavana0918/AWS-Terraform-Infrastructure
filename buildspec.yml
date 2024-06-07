@@ -1,0 +1,64 @@
+# version: 0.2
+
+# phases:
+#   install:
+#     runtime-versions:
+#       python: 3.8
+#     commands:
+#       - apt-get update -y
+#       - apt-get install -y unzip
+#       - curl -o terraform.zip https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+#       - unzip terraform.zip
+#       - mv terraform /usr/local/bin/
+#       - terraform --version
+#       - apt-get install -y awscli
+#       - aws --version
+#       - git config --global credential.helper '!aws codecommit credential-helper $@'
+#       - git config --global credential.UseHttpPath true
+
+#   pre_build:
+#     commands:
+#       - aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+#       - aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+#       - terraform init -backend-config="infrastructure-backend.config"
+#   build:
+#     commands:
+#       - terraform plan -var-file="terraform.tfvars" -out=terraform.plan
+#   post_build:
+#     commands:
+#       - terraform apply -auto-approve terraform.plan
+version: 0.2
+
+
+phases:
+  install:
+    commands:
+      - apt-get update -y
+      - apt-get install -y unzip
+      - curl -o terraform.zip https://releases.hashicorp.com/terraform/1.0.11/terraform_1.0.11_linux_amd64.zip
+      - unzip terraform.zip
+      - mv terraform /usr/local/bin/
+      - terraform --version
+      - apt-get install -y awscli
+      - aws --version
+      - git config --global credential.helper '!aws codecommit credential-helper $@'
+      - git config --global credential.UseHttpPath true
+
+  pre_build:
+    commands:
+      - terraform init -backend-config="infrastructure-backend.config"
+
+  build:
+    commands:
+      - terraform plan -var-file="terraform.tfvars" -out=terraform.plan
+      - echo "Terraform plan completed"
+
+  post_build:
+     commands:
+      - APPLY_TERRAFORM=$(aws ssm get-parameter --name /codepipeline/terraform/apply --query "Parameter.Value" --output text)
+      - |
+        if [ "${APPLY_TERRAFORM}" = "yes" ]; then
+          terraform apply -auto-approve terraform.plan
+        else
+          echo "Skipping terraform apply as APPLY_TERRAFORM is set to ${APPLY_TERRAFORM}"
+        fi
