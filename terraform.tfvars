@@ -96,8 +96,8 @@ internal                   = false
 enable_deletion_protection = false
 
 target_group_name     = "app-target-group"
-target_group_port     = 22
-target_group_protocol = "SSH"
+target_group_port     = 80
+target_group_protocol = "HTTP"
 
 health_check_healthy_threshold   = 3
 health_check_unhealthy_threshold = 5
@@ -106,8 +106,8 @@ health_check_interval            = 60
 health_check_path                = "/"
 health_check_matcher             = "200"
 
-listener_port     = 22
-listener_protocol = "SSH"
+listener_port     = 80
+listener_protocol = "HTTP"
 
 ec2_instance_ids = {
   "WebServer1" = "i-02005860a72c9f368"
