@@ -44,5 +44,5 @@ jobs:
         TF_INPUT: false
         TF_IN_AUTOMATION: true
 
-    # - name: Terraform destroy
-    #   run: terraform destroy -var-file="terraform.tfvars" -auto-approve
+    - name: Terraform destroy
+      run: terraform destroy -var-file="terraform.tfvars" -auto-approve
