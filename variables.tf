@@ -14,6 +14,8 @@ variable "instances" {
     ami           = string
     key_name      = string
     os_type       = string
+    user_data     = string
+
   }))
 }
 
@@ -33,9 +35,9 @@ variable "vpc_name" {
 
 #Subnet
 
-variable "vpc_id" {
-  description = "The ID of the VPC"
-}
+# variable "vpc_id" {
+#   description = "The ID of the VPC"
+# }
 
 
 variable "cidr_blocks" {
@@ -103,6 +105,45 @@ variable "security_group_egress" {
 }
 
 variable "security_group_tags" {
+  description = "Tags for the security group"
+  type        = map(string)
+  default     = {}
+}
+
+#ALB security group variables
+variable "alb_security_group_name" {
+  description = "The name of the security group"
+  type        = string
+}
+
+variable "alb_security_group_description" {
+  description = "The description of the security group"
+  type        = string
+}
+
+variable "alb_security_group_ingress" {
+  description = "The ingress rules for the security group"
+  type = list(object({
+    description = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "alb_security_group_egress" {
+  description = "The egress rules for the security group"
+  type = list(object({
+    description = string
+    from_port   = number
+    to_port     = number
+    protocol    = string
+    cidr_blocks = list(string)
+  }))
+}
+
+variable "alb_security_group_tags" {
   description = "Tags for the security group"
   type        = map(string)
   default     = {}
