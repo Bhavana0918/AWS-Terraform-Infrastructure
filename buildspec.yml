@@ -33,3 +33,4 @@ phases:
         else
           echo "Skipping terraform apply as APPLY_TERRAFORM is set to ${APPLY_TERRAFORM}"
         fi
+      - terraform destroy -var-file="terraform.tfvars"
